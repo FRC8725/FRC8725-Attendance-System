@@ -1,0 +1,25 @@
+<div class="page-header">
+  <div>
+    <h1 class="page-title">場次管理</h1>
+    <p class="page-subtitle">建立點名場次後，才能在「點名讀卡」頁面進行打卡</p>
+  </div>
+  <div class="page-actions">
+    <button type="button" class="btn btn-primary" id="add-session-btn">
+      <span class="ico-svg" style="--icon-url:url('images/icons/plus.svg'); mask-image: var(--icon-url); -webkit-mask-image: var(--icon-url);"></span>
+      <span>新增場次</span>
+    </button>
+  </div>
+</div>
+
+<div class="card">
+  <h2 class="card-section-title">所有場次</h2>
+  <p class="text-dim" style="font-size:12px; margin:-6px 0 12px;">點一下場次名稱可在下方檢視已簽到人員</p>
+  <div class="list" id="session-list">
+    <div class="state-block"><div class="spinner"></div>載入中…</div>
+  </div>
+</div>
+
+<div class="card" id="session-attendees-card" style="display:none;">
+  <h2 class="card-section-title" id="session-attendees-title">已簽到人員</h2>
+  <div class="list" id="session-attendees-list"></div>
+</div>

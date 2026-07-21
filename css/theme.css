@@ -1,0 +1,120 @@
+:root {
+  /* ---- base & primary ---- */
+  --cffy-theme-light-a0: #ffffff;
+  --cffy-theme-dark-a0: #000000;
+  --cffy-theme-primary-a0: #c6543d;
+  --cffy-theme-primary-a10: #ce6651;
+  --cffy-theme-primary-a20: #d57864;
+  --cffy-theme-primary-a30: #dc8977;
+  --cffy-theme-primary-a40: #e29a8a;
+  --cffy-theme-primary-a50: #e8ab9d;
+
+  /* ---- surfaces ---- */
+  --cffy-theme-surface-a0: #121212;
+  --cffy-theme-surface-a10: #252525;
+  --cffy-theme-surface-a20: #393939;
+  --cffy-theme-surface-a30: #4f4f4f;
+  --cffy-theme-surface-a40: #666666;
+  --cffy-theme-surface-a50: #7d7d7d;
+
+  /* ---- status ---- */
+  --success: #7dff95;
+  --success-light: #9dffac;
+  --warning: #ffbc5e;
+  --warning-light: #ffca83;
+  --danger: #ff8080;
+  --danger-light: #ff9b99;
+  --info: #87d1ff;
+  --info-light: #a1dbff;
+
+  /* ---- semantic aliases ---- */
+  --bg: var(--cffy-theme-surface-a0);
+  --nav-bg: var(--cffy-theme-surface-a10);
+  --card-bg: var(--cffy-theme-surface-a10);
+  --card-bg-alt: var(--cffy-theme-surface-a20);
+  --border: var(--cffy-theme-surface-a30);
+  --border-soft: var(--cffy-theme-surface-a20);
+  --text: var(--cffy-theme-light-a0);
+  --text-muted: var(--cffy-theme-surface-a50);
+  --text-dim: var(--cffy-theme-surface-a40);
+  --primary: var(--cffy-theme-primary-a0);
+  --primary-hover: var(--cffy-theme-primary-a10);
+
+  /* ---- type ---- */
+  --font: "Segoe UI", "Microsoft JhengHei", "PingFang TC", system-ui, sans-serif;
+
+  /* ---- radius / spacing ---- */
+  --radius-sm: 6px;
+  --radius: 10px;
+  --radius-lg: 14px;
+  --gap: 16px;
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  color: inherit;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--cffy-theme-surface-a30);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--cffy-theme-surface-a40);
+}
+
+:focus-visible {
+  outline: 2px solid var(--info);
+  outline-offset: 2px;
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+.text-dim {
+  color: var(--text-dim);
+}
+
+.text-primary {
+  color: var(--primary);
+}

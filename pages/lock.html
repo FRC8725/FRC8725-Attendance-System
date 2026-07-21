@@ -1,0 +1,16 @@
+<div class="lock-wrap">
+  <div class="card">
+    <div class="lock-icon ico-svg" style="--icon-url:url('images/icons/lock.svg'); mask-image: var(--icon-url); -webkit-mask-image: var(--icon-url);"></div>
+    <h1 class="lock-title">請先解鎖</h1>
+    <p class="lock-sub">此頁面需要輸入讀取密碼才能進入</p>
+
+    <form id="lock-form" novalidate>
+      <div class="field">
+        <label class="field-label" for="lock-password">讀取密碼</label>
+        <input class="input" id="lock-password" name="password" type="password" inputmode="text" autocomplete="off" autofocus />
+        <div class="field-error" id="lock-error" style="display:none;"></div>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%;">解鎖</button>
+    </form>
+  </div>
+</div>

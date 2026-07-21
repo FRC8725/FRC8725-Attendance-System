@@ -1,0 +1,207 @@
+/* ================= lock screen ================= */
+.lock-wrap {
+  max-width: 380px;
+  margin: 10vh auto 0;
+}
+
+.lock-icon {
+  width: 44px;
+  height: 44px;
+  background-color: var(--primary);
+  margin: 0 auto 16px;
+}
+
+.lock-title {
+  text-align: center;
+  font-size: 20px;
+  font-weight: 800;
+  margin: 0 0 4px;
+}
+
+.lock-sub {
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0 0 22px;
+}
+
+/* ================= scan page ================= */
+.scan-session-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.scan-session-bar .select {
+  max-width: 280px;
+}
+
+.scan-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 48px 20px;
+  gap: 16px;
+}
+
+.scan-target {
+  width: 132px;
+  height: 132px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.scan-target .ico-svg {
+  width: 52px;
+  height: 52px;
+  background-color: var(--text-dim);
+  transition: background-color 150ms ease;
+}
+
+.scan-target.is-active {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 6px rgba(198, 84, 61, 0.15);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+.scan-target.is-active .ico-svg {
+  background-color: var(--primary);
+}
+
+.scan-target.is-success {
+  border-color: var(--success);
+  box-shadow: 0 0 0 6px rgba(125, 255, 149, 0.15);
+}
+
+.scan-target.is-success .ico-svg {
+  background-color: var(--success);
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 6px rgba(198, 84, 61, 0.15); }
+  50% { box-shadow: 0 0 0 12px rgba(198, 84, 61, 0.08); }
+}
+
+.scan-status-title {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.scan-status-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  max-width: 320px;
+}
+
+.scan-recent-title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 22px 0 12px;
+}
+
+/* ================= demo mode panel ================= */
+.scan-demo-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 280px;
+}
+
+.scan-demo-panel .field {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+/* ================= summary tiles ================= */
+.tile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.tile {
+  background: var(--card-bg-alt);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tile-value {
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.tile-value.color-success { color: var(--success-light); }
+.tile-value.color-warning { color: var(--warning-light); }
+.tile-value.color-danger { color: var(--danger-light); }
+.tile-value.color-info { color: var(--info-light); }
+
+.tile-label {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* ================= session card ================= */
+.session-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.session-card.is-active {
+  border-color: var(--primary);
+}
+
+.session-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.session-card-name {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.session-card-date {
+  font-size: 11.5px;
+  color: var(--text-dim);
+}
+
+/* ================= search box ================= */
+.search-box {
+  position: relative;
+}
+
+.search-box .ico-svg {
+  position: absolute;
+  left: 11px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 15px;
+  height: 15px;
+  background-color: var(--text-dim);
+}
+
+.search-box .input {
+  padding-left: 34px;
+}

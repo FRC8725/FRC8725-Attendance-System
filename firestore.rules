@@ -1,0 +1,48 @@
+rules_version = '2';
+
+// ---------------------------------------------------------------------
+// 這組規則搭配「單一共用密碼」的介面鎖定使用。
+// 重要觀念：密碼鎖只是網頁介面上的一道門，不是 Firebase 層級的身分驗證。
+// 因為網頁必須能讀到 settings/app.readPassword 才能在瀏覽器裡跟使用者
+// 輸入的密碼比對，所以這份文件必須允許「讀取」。這代表：只要有人知道
+// 你的 Firebase 專案設定值，理論上還是可以直接呼叫 Firestore API 讀到
+// 密碼本身，繞過網頁的門。這是「純前端共用密碼」方案本質上的限制，
+// 只能當作降低隨手誤用的門檻，不是真正的存取控制。
+//
+// 若團隊資料較敏感，建議改用 Firebase Authentication（例如讓帶隊/管理
+// 者各自用帳號登入，只有登入者能寫入 attendance / members / sessions），
+// 屆時可把 settings 規則改回完全禁止讀取。
+// ---------------------------------------------------------------------
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // 密碼設定：允許讀取供前端比對，但禁止任何用戶端寫入，
+    // 只能由你在 Firebase Console 或 Admin SDK 手動設定/更新密碼。
+    match /settings/{docId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /members/{memberId} {
+      allow read: if true;
+      allow create: if request.resource.data.name is string
+                    && request.resource.data.name.size() > 0;
+      allow update, delete: if true;
+    }
+
+    match /sessions/{sessionId} {
+      allow read: if true;
+      allow create: if request.resource.data.name is string
+                    && request.resource.data.name.size() > 0;
+      allow update, delete: if true;
+    }
+
+    match /attendance/{attendanceId} {
+      allow read: if true;
+      allow create: if request.resource.data.sessionId is string
+                    && request.resource.data.memberId is string;
+      allow update, delete: if true;
+    }
+  }
+}

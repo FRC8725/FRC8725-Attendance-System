@@ -1,0 +1,28 @@
+<div class="page-header">
+  <div>
+    <h1 class="page-title">資料匯總</h1>
+    <p class="page-subtitle">檢視各場次或各成員的出席狀況，此頁面不需要密碼</p>
+  </div>
+</div>
+
+<div style="display:flex; gap:8px; margin-bottom:18px;">
+  <button type="button" class="chip is-clickable is-active" id="mode-btn-session">依場次檢視</button>
+  <button type="button" class="chip is-clickable" id="mode-btn-member">依成員檢視</button>
+</div>
+
+<div class="layout-3col">
+  <div class="col-left col-sticky">
+    <div class="card" id="summary-left-card"></div>
+  </div>
+
+  <div class="col-main">
+    <div class="card" id="summary-main-card"></div>
+  </div>
+
+  <div class="col-right col-sticky">
+    <div class="card">
+      <h2 class="card-section-title">摘要</h2>
+      <div class="tile-grid" id="summary-tiles"></div>
+    </div>
+  </div>
+</div>

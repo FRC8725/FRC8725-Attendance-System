@@ -1,0 +1,45 @@
+<div class="page-header">
+  <div>
+    <h1 class="page-title">點名讀卡</h1>
+    <p class="page-subtitle">選擇場次後，將學生證靠近手機背面感應</p>
+  </div>
+</div>
+
+<div class="scan-session-bar">
+  <select class="select input" id="session-select" style="max-width:280px;"></select>
+  <a href="#/sessions" class="btn btn-ghost">
+    <span class="ico-svg" style="--icon-url:url('images/icons/calendar.svg'); mask-image: var(--icon-url); -webkit-mask-image: var(--icon-url);"></span>
+    <span>管理場次</span>
+  </a>
+  <span class="badge badge-warning" id="demo-mode-badge" style="display:none;">模擬模式 DEMO</span>
+</div>
+
+<div id="scan-support-banner"></div>
+
+<div class="card">
+  <div class="scan-stage">
+    <div class="scan-target" id="scan-target">
+      <span class="ico-svg" style="--icon-url:url('images/icons/nfc.svg'); mask-image: var(--icon-url); -webkit-mask-image: var(--icon-url);"></span>
+    </div>
+    <div class="scan-status-title" id="scan-status-title">尚未開始感應</div>
+    <div class="scan-status-desc" id="scan-status-desc">請先選擇場次，再點下方按鈕開始感應學生證</div>
+    <button type="button" class="btn btn-primary" id="scan-toggle-btn" style="min-width:160px;">開始感應</button>
+
+    <div class="scan-demo-panel" id="scan-demo-panel" style="display:none;">
+      <div class="field">
+        <label class="field-label" for="demo-uid-input">模擬卡號（UID）</label>
+        <input class="input" id="demo-uid-input" list="demo-uid-options" placeholder="輸入或從清單選擇卡號" autocomplete="off" />
+        <datalist id="demo-uid-options"></datalist>
+      </div>
+      <button type="button" class="btn btn-primary" id="demo-scan-btn" style="width:100%;">模擬感應</button>
+    </div>
+  </div>
+</div>
+
+<div class="scan-recent-title">本場次最近簽到</div>
+<div class="list" id="scan-recent-list">
+  <div class="list-empty">
+    <div class="list-empty-title">尚未有任何簽到紀錄</div>
+    <div class="list-empty-desc">感應成功後會顯示在這裡</div>
+  </div>
+</div>

@@ -1,0 +1,20 @@
+{
+  "brand": {
+    "name": "Team 8725",
+    "subtitle": "Misty Panther · Workshop",
+    "logo": "images/brand/team-logo.png"
+  },
+  "nav": [
+    { "route": "/summary", "label": "資料匯總", "icon": "home", "protected": false },
+    { "route": "/scan", "label": "點名讀卡", "icon": "nfc", "protected": true },
+    { "route": "/sessions", "label": "場次管理", "icon": "calendar", "protected": true },
+    { "route": "/members", "label": "成員管理", "icon": "users", "protected": true }
+  ],
+  "defaultRoute": "/summary",
+  "summaryTiles": [
+    { "key": "totalSessions", "label": "場次總數", "color": "info" },
+    { "key": "totalMembers", "label": "登記成員", "color": "info" },
+    { "key": "todayCheckins", "label": "今日簽到", "color": "success" },
+    { "key": "selectionRate", "label": "目前選取出席率", "color": "warning" }
+  ]
+}

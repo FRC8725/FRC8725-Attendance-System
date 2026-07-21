@@ -1,0 +1,22 @@
+<div class="page-header">
+  <div>
+    <h1 class="page-title">成員管理</h1>
+    <p class="page-subtitle">預先登記學生證卡號，掃描時可自動辨識成員</p>
+  </div>
+  <div class="page-actions">
+    <button type="button" class="btn btn-primary" id="add-member-btn">
+      <span class="ico-svg" style="--icon-url:url('images/icons/plus.svg'); mask-image: var(--icon-url); -webkit-mask-image: var(--icon-url);"></span>
+      <span>新增成員</span>
+    </button>
+  </div>
+</div>
+
+<div class="card">
+  <div class="search-box" style="margin-bottom:16px;">
+    <span class="ico-svg" style="--icon-url:url('images/icons/search.svg'); mask-image: var(--icon-url); -webkit-mask-image: var(--icon-url);"></span>
+    <input class="input" id="member-search" placeholder="搜尋姓名或卡號…" />
+  </div>
+  <div class="list" id="member-list">
+    <div class="state-block"><div class="spinner"></div>載入中…</div>
+  </div>
+</div>
