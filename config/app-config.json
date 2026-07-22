@@ -8,7 +8,10 @@
     { "route": "/summary", "label": "資料匯總", "icon": "home", "protected": false },
     { "route": "/scan", "label": "點名讀卡", "icon": "nfc", "protected": true },
     { "route": "/sessions", "label": "場次管理", "icon": "calendar", "protected": true },
-    { "route": "/members", "label": "成員管理", "icon": "users", "protected": true }
+    { "route": "/members", "label": "成員管理", "icon": "users", "protected": true },
+    { "route": "/goodkid", "label": "好寶寶紀錄", "icon": "star", "protected": false },
+    { "route": "/log", "label": "活動紀錄", "icon": "list", "protected": true },
+    { "route": "/export", "label": "匯出系統", "icon": "download", "protected": true }
   ],
   "defaultRoute": "/summary",
   "summaryTiles": [

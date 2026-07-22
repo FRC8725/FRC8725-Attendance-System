@@ -26,6 +26,24 @@ const routeTable = {
     protected: true,
     controller: () => import('../pages/members.js'),
   },
+  '/goodkid': {
+    file: 'pages/goodkid.html',
+    title: '好寶寶紀錄',
+    protected: false,
+    controller: () => import('../pages/goodkid.js'),
+  },
+  '/log': {
+    file: 'pages/log.html',
+    title: '活動紀錄',
+    protected: true,
+    controller: () => import('../pages/log.js'),
+  },
+  '/export': {
+    file: 'pages/export.html',
+    title: '匯出系統',
+    protected: true,
+    controller: () => import('../pages/export.js'),
+  },
 };
 
 const lockRoute = {

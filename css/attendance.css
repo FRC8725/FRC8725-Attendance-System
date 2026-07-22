@@ -205,3 +205,37 @@
 .search-box .input {
   padding-left: 34px;
 }
+
+/* ================= good-kid emoji record ================= */
+.goodkid-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.goodkid-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+  background: var(--card-bg-alt);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius);
+  padding: 16px 12px;
+}
+
+.goodkid-emoji {
+  font-size: 34px;
+  line-height: 1;
+}
+
+.goodkid-name {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.goodkid-status-label {
+  font-size: 11.5px;
+  color: var(--text-muted);
+}

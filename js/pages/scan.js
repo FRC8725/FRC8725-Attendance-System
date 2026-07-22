@@ -167,6 +167,7 @@ export async function mountPage(context) {
       memberId: member.id,
       memberName: member.name,
       cardUID: uid,
+      sessionName: sessions.find((s) => s.id === sessionId)?.name,
     });
     flashTarget('is-success');
     showToast(`${member.name} 簽到成功`, 'success');

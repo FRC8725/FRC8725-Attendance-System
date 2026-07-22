@@ -54,6 +54,44 @@ https://你的網址/#/scan?demo=1
 
 要換 logo 圖片，把新圖片放進 `images/brand/` 資料夾並更新 `logo` 路徑即可，不需要改任何程式碼。手機版（≤768px）為了節省橫向空間，只會顯示隊名，不顯示副標題與導覽文字（導覽列在手機上改為純圖示）。
 
+## 新增功能：活動紀錄／好寶寶紀錄／匯出系統
+
+側欄新增三個項目，對應到 Firestore 新的 `logs` collection 與一份新的 JSON 設定檔：
+
+| 路由 | 頁面 | 需要密碼 | 說明 |
+|---|---|---|---|
+| `#/goodkid` | 好寶寶紀錄 | 否 | 用 emoji 呈現每位成員「最新場次」的出席狀態：以最後一場為基準，往前算連續出席或連續缺席了幾場，再對照 `config/goodkid-emoji.json` 挑選對應的 emoji 與說明文字。 |
+| `#/log` | 活動紀錄 | 是 | 列出所有名單新增／刪除、場次新增／刪除、簽到／取消簽到等操作紀錄，可用上方的篩選按鈕依類型篩選。 |
+| `#/export` | 匯出系統 | 是 | 選擇開始與結束日期，按一下「匯出 CSV」會下載該範圍內所有簽到紀錄（場次名稱、日期、成員姓名、卡號、簽到時間），檔案已加上 UTF-8 BOM，Excel 開啟中文不會變亂碼。 |
+
+密碼保護的分配：活動紀錄與匯出功能因為牽涉到管理性/敏感操作，沿用其他管理頁面一樣需要密碼；好寶寶紀錄則設計成類似資料匯總的公開展示頁（例如可以投影給大家看誰全勤），所以不需要密碼。如果你想要不同的分配方式，直接告訴我要調整成怎樣即可，只需要改 `config/app-config.json` 裡對應項目的 `protected` 欄位。
+
+### 活動紀錄如何運作
+
+`js/services/db.js` 裡的每個新增／更新／刪除函式（成員、場次、簽到）在成功寫入後，都會順手呼叫 `addLog()` 寫一筆紀錄到 Firestore 的 `logs` collection，欄位為 `type`（例如 `member_add`、`attendance_delete`）、`message`（給人看的說明文字）、`meta`（相關 id）、`createdAt`。這個寫入是「盡力而為」：就算寫入紀錄失敗，也不會擋下原本的操作本身。`logs` collection 在 `firestore.rules` 裡設定為只能新增、禁止修改或刪除，維持稽核紀錄不被竄改的完整性。
+
+### 好寶寶紀錄的 emoji 規則怎麼調整
+
+完全由 `config/goodkid-emoji.json` 決定，不用改程式碼：
+
+```json
+{
+  "streakRules": [
+    { "minStreak": 5, "emoji": "🏆", "label": "連續出席 5 場以上" },
+    { "minStreak": 3, "emoji": "🌟", "label": "連續出席 3 場以上" },
+    { "minStreak": 1, "emoji": "✅", "label": "最新場次有出席" }
+  ],
+  "absenceRules": [
+    { "minAbsentStreak": 3, "emoji": "🚨", "label": "連續缺席 3 場以上" },
+    { "minAbsentStreak": 1, "emoji": "💤", "label": "最新場次缺席" }
+  ],
+  "noRecordEmoji": "🆕",
+  "noRecordLabel": "尚無出席紀錄"
+}
+```
+
+系統會從最新的場次往回算：如果最新一場有出席，就往前數「連續出席了幾場」去比對 `streakRules`（門檻由高到低找第一個符合的）；如果最新一場缺席，就往前數「連續缺席了幾場」去比對 `absenceRules`。想加更多等級（例如連續出席 10 場給特別的 emoji），直接在對應陣列裡加一筆 `{ "minStreak": 10, "emoji": "👑", "label": "..." }` 即可。
+
 ## Firebase 設定步驟
 
 1. 到 [Firebase Console](https://console.firebase.google.com/) 建立新專案，啟用 **Firestore Database**（正式環境模式即可，稍後會套用 `firestore.rules`）。
@@ -91,6 +129,7 @@ npx serve project        # 或 python3 -m http.server 5173 -d project
 | `members/{id}` | `name`, `cardUID`, `note`, `createdAt` | 成員與其學生證 UID 對應 |
 | `sessions/{id}` | `name`, `date`, `note`, `createdAt` | 點名場次（活動） |
 | `attendance/{id}` | `sessionId`, `memberId`, `memberName`, `cardUID`, `checkedInAt` | 每筆簽到紀錄；同一場次同一成員只會建立一筆 |
+| `logs/{id}` | `type`, `message`, `meta`, `createdAt` | 操作紀錄（新增／刪除成員、場次、簽到等），只能新增、無法修改或刪除 |
 
 ## 頁面與密碼保護
 
@@ -100,6 +139,9 @@ npx serve project        # 或 python3 -m http.server 5173 -d project
 | `#/scan` | 點名讀卡（NFC 感應，手機優化） | 是 |
 | `#/sessions` | 場次管理 | 是 |
 | `#/members` | 成員管理（含 UID 登記） | 是 |
+| `#/goodkid` | 好寶寶紀錄（emoji 出席狀態） | 否 |
+| `#/log` | 活動紀錄 | 是 |
+| `#/export` | 匯出系統（CSV） | 是 |
 
 解鎖狀態存在 `sessionStorage`，關閉分頁或重新整理瀏覽器分頁群組後會需要重新輸入；側欄底部也提供「重新鎖定」按鈕可手動鎖回。
 

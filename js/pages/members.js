@@ -76,7 +76,7 @@ export async function mountPage() {
         });
         if (!ok) return;
         try {
-          await deleteMember(id);
+          await deleteMember(id, member.name);
           showToast('已刪除成員', 'success');
           refresh();
         } catch (err) {
