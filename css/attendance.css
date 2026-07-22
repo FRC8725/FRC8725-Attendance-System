@@ -206,36 +206,107 @@
   padding-left: 34px;
 }
 
-/* ================= good-kid emoji record ================= */
+/* ================= good-kid manual emoji marking ================= */
 .goodkid-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 12px;
 }
 
-.goodkid-card {
+.goodkid-member-card {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 6px;
+  gap: 10px;
   background: var(--card-bg-alt);
   border: 1px solid var(--border-soft);
   border-radius: var(--radius);
-  padding: 16px 12px;
+  padding: 14px;
 }
 
-.goodkid-emoji {
-  font-size: 34px;
-  line-height: 1;
+.goodkid-member-top {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
 }
 
-.goodkid-name {
+.goodkid-member-name {
   font-size: 13px;
   font-weight: 700;
 }
 
-.goodkid-status-label {
-  font-size: 11.5px;
-  color: var(--text-muted);
+.goodkid-member-meta {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.goodkid-emoji-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.goodkid-emoji-btn {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  background: var(--card-bg);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  cursor: pointer;
+  transition: border-color 130ms ease;
+}
+
+.goodkid-emoji-btn:hover {
+  border-color: var(--primary);
+}
+
+.goodkid-emoji-char {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.goodkid-emoji-label {
+  font-size: 9.5px;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
+.goodkid-emoji-count {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: var(--primary);
+  color: var(--cffy-theme-light-a0);
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3px;
+}
+
+.goodkid-emoji-minus {
+  position: absolute;
+  bottom: -6px;
+  right: -6px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--danger);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--cffy-theme-dark-a0);
+  cursor: pointer;
+  border: none;
+  padding: 0;
+  line-height: 1;
 }

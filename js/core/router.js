@@ -12,6 +12,7 @@ const routeTable = {
     file: 'pages/scan.html',
     title: '點名讀卡',
     protected: true,
+    lockScope: 'scan',
     controller: () => import('../pages/scan.js'),
   },
   '/sessions': {
@@ -28,8 +29,8 @@ const routeTable = {
   },
   '/goodkid': {
     file: 'pages/goodkid.html',
-    title: '好寶寶紀錄',
-    protected: false,
+    title: '好寶寶系統',
+    protected: true,
     controller: () => import('../pages/goodkid.js'),
   },
   '/log': {
@@ -41,7 +42,7 @@ const routeTable = {
   '/export': {
     file: 'pages/export.html',
     title: '匯出系統',
-    protected: true,
+    protected: false,
     controller: () => import('../pages/export.js'),
   },
 };
@@ -85,7 +86,8 @@ async function renderRoute() {
 
   await runCleanup();
 
-  const needsUnlock = entry.protected && !isUnlocked();
+  const lockScope = entry.lockScope || 'general';
+  const needsUnlock = entry.protected && !isUnlocked(lockScope);
   const target = needsUnlock ? lockRoute : entry;
 
   outlet.innerHTML = '<div class="state-block"><div class="spinner"></div>載入中…</div>';
@@ -110,6 +112,8 @@ async function renderRoute() {
       // Lock page uses this to know which route (including any query string,
       // e.g. /scan?demo=1) to resume after unlocking.
       resumePath: needsUnlock ? raw : null,
+      // Which password scope to unlock ('general' or 'scan'); only meaningful on the lock page.
+      lockScope,
     };
 
     const cleanup = await mod.mountPage(context);

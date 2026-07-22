@@ -10,6 +10,8 @@ const TYPE_META = {
   session_delete: { label: '場次刪除', badge: 'badge-danger' },
   attendance_add: { label: '簽到', badge: 'badge-success' },
   attendance_delete: { label: '簽到刪除', badge: 'badge-danger' },
+  goodkid_mark: { label: '好寶寶標記', badge: 'badge-success' },
+  goodkid_unmark: { label: '好寶寶取消標記', badge: 'badge-warning' },
 };
 
 function matchesFilter(type, filter) {
@@ -17,6 +19,7 @@ function matchesFilter(type, filter) {
   if (filter === 'attendance') return type.startsWith('attendance');
   if (filter === 'member') return type.startsWith('member');
   if (filter === 'session') return type.startsWith('session');
+  if (filter === 'goodkid') return type.startsWith('goodkid');
   if (filter === 'delete') return type.endsWith('delete');
   return true;
 }

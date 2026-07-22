@@ -54,50 +54,58 @@ https://你的網址/#/scan?demo=1
 
 要換 logo 圖片，把新圖片放進 `images/brand/` 資料夾並更新 `logo` 路徑即可，不需要改任何程式碼。手機版（≤768px）為了節省橫向空間，只會顯示隊名，不顯示副標題與導覽文字（導覽列在手機上改為純圖示）。
 
-## 新增功能：活動紀錄／好寶寶紀錄／匯出系統
+## 新增功能：活動紀錄／好寶寶系統／匯出系統
 
-側欄新增三個項目，對應到 Firestore 新的 `logs` collection 與一份新的 JSON 設定檔：
+側欄新增三個項目，對應到 Firestore 新的 `logs`、`goodkidMarks` collection 與一份新的 JSON 設定檔：
 
 | 路由 | 頁面 | 需要密碼 | 說明 |
 |---|---|---|---|
-| `#/goodkid` | 好寶寶紀錄 | 否 | 用 emoji 呈現每位成員「最新場次」的出席狀態：以最後一場為基準，往前算連續出席或連續缺席了幾場，再對照 `config/goodkid-emoji.json` 挑選對應的 emoji 與說明文字。 |
-| `#/log` | 活動紀錄 | 是 | 列出所有名單新增／刪除、場次新增／刪除、簽到／取消簽到等操作紀錄，可用上方的篩選按鈕依類型篩選。 |
-| `#/export` | 匯出系統 | 是 | 選擇開始與結束日期，按一下「匯出 CSV」會下載該範圍內所有簽到紀錄（場次名稱、日期、成員姓名、卡號、簽到時間），檔案已加上 UTF-8 BOM，Excel 開啟中文不會變亂碼。 |
+| `#/goodkid` | 好寶寶系統 | 是（一般管理密碼） | 每位成員卡片上有 5 個可點擊的 emoji 按鈕，點一下就記錄一次；可重複點擊、可同時累積多種不同 emoji，由管理者手動判斷、手動標記，不是系統自動判斷。 |
+| `#/log` | 活動紀錄 | 是（一般管理密碼） | 列出所有名單新增／刪除、場次新增／刪除、簽到／取消簽到、好寶寶標記等操作紀錄，可用上方的篩選按鈕依類型篩選。 |
+| `#/export` | 匯出系統 | 否 | 選擇開始與結束日期，按一下「匯出 CSV」會下載該範圍內所有簽到紀錄（場次名稱、日期、成員姓名、卡號、簽到時間），檔案已加上 UTF-8 BOM，Excel 開啟中文不會變亂碼。 |
 
-密碼保護的分配：活動紀錄與匯出功能因為牽涉到管理性/敏感操作，沿用其他管理頁面一樣需要密碼；好寶寶紀錄則設計成類似資料匯總的公開展示頁（例如可以投影給大家看誰全勤），所以不需要密碼。如果你想要不同的分配方式，直接告訴我要調整成怎樣即可，只需要改 `config/app-config.json` 裡對應項目的 `protected` 欄位。
+如果想調整密碼保護的分配，改 `config/app-config.json` 裡對應項目的 `protected` 欄位即可，不用改程式碼。
 
 ### 活動紀錄如何運作
 
-`js/services/db.js` 裡的每個新增／更新／刪除函式（成員、場次、簽到）在成功寫入後，都會順手呼叫 `addLog()` 寫一筆紀錄到 Firestore 的 `logs` collection，欄位為 `type`（例如 `member_add`、`attendance_delete`）、`message`（給人看的說明文字）、`meta`（相關 id）、`createdAt`。這個寫入是「盡力而為」：就算寫入紀錄失敗，也不會擋下原本的操作本身。`logs` collection 在 `firestore.rules` 裡設定為只能新增、禁止修改或刪除，維持稽核紀錄不被竄改的完整性。
+`js/services/db.js` 裡的每個新增／更新／刪除函式（成員、場次、簽到、好寶寶標記）在成功寫入後，都會順手呼叫 `addLog()` 寫一筆紀錄到 Firestore 的 `logs` collection，欄位為 `type`（例如 `member_add`、`attendance_delete`、`goodkid_mark`）、`message`（給人看的說明文字）、`meta`（相關 id）、`createdAt`。這個寫入是「盡力而為」：就算寫入紀錄失敗，也不會擋下原本的操作本身。`logs` collection 在 `firestore.rules` 裡設定為只能新增、禁止修改或刪除，維持稽核紀錄不被竄改的完整性。
 
-### 好寶寶紀錄的 emoji 規則怎麼調整
+### 好寶寶系統怎麼運作、按鈕怎麼調整
 
-完全由 `config/goodkid-emoji.json` 決定，不用改程式碼：
+這是**手動標記**系統：管理者自行判斷成員當下的表現，點擊對應的 emoji 記錄一次；同一個人可以在同一次造訪裡被點擊多種不同 emoji，也可以對同一個 emoji重複點擊多次疊加次數。每個 emoji 按鈕右上角會顯示目前累積的次數，次數大於 0 時右下角會出現一個「−」小按鈕，可以移除一次（例如點錯了）。
+
+可點擊的 5 個 emoji 選項完全由 `config/goodkid-emoji.json` 決定，不用改程式碼：
 
 ```json
 {
-  "streakRules": [
-    { "minStreak": 5, "emoji": "🏆", "label": "連續出席 5 場以上" },
-    { "minStreak": 3, "emoji": "🌟", "label": "連續出席 3 場以上" },
-    { "minStreak": 1, "emoji": "✅", "label": "最新場次有出席" }
-  ],
-  "absenceRules": [
-    { "minAbsentStreak": 3, "emoji": "🚨", "label": "連續缺席 3 場以上" },
-    { "minAbsentStreak": 1, "emoji": "💤", "label": "最新場次缺席" }
-  ],
-  "noRecordEmoji": "🆕",
-  "noRecordLabel": "尚無出席紀錄"
+  "emojiOptions": [
+    { "emoji": "🌟", "label": "表現優異" },
+    { "emoji": "👍", "label": "積極參與" },
+    { "emoji": "🎯", "label": "準時到場" },
+    { "emoji": "🙌", "label": "樂於協助" },
+    { "emoji": "⚠️", "label": "需要提醒" }
+  ]
 }
 ```
 
-系統會從最新的場次往回算：如果最新一場有出席，就往前數「連續出席了幾場」去比對 `streakRules`（門檻由高到低找第一個符合的）；如果最新一場缺席，就往前數「連續缺席了幾場」去比對 `absenceRules`。想加更多等級（例如連續出席 10 場給特別的 emoji），直接在對應陣列裡加一筆 `{ "minStreak": 10, "emoji": "👑", "label": "..." }` 即可。
+想換 emoji 或文字說明，直接改這份 JSON 裡的內容即可；`emojiOptions` 陣列有幾個項目，頁面上就會顯示幾個按鈕。累積的次數存在 Firestore 的 `goodkidMarks/{memberId}` 文件裡，欄位 `counts` 是「emoji → 次數」的對照表。
+
+## 點名讀卡的獨立密碼（適合固定擺放的讀卡機）
+
+「點名讀卡」頁面現在使用**獨立於其他管理頁面的專用密碼**（存在 `settings/app.scanPassword`），跟場次管理／成員管理／活動紀錄／好寶寶系統共用的 `settings/app.readPassword` 是分開的兩組密碼。這樣你可以：
+
+- 把讀卡機密碼設定得比較簡單好輸入（畢竟現場常常要重新解鎖），跟後台管理密碼分開，互不影響安全性。
+- 讀卡機的解鎖狀態存在瀏覽器的 `localStorage`（而不是 `sessionStorage`），所以如果你把某支手機或平板固定架設當作讀卡機，解鎖一次之後，就算重新整理頁面或重開瀏覽器也會維持解鎖，不用每次都重新輸入——除非你手動點側欄的「鎖定讀卡機」，或清除瀏覽器資料。
+- 其他管理頁面（場次管理、成員管理、活動紀錄、好寶寶系統）仍然共用原本的 `readPassword`，解鎖狀態存在 `sessionStorage`，關閉分頁就需要重新輸入，適合比較敏感的管理操作。
+
+**需要你額外做的事**：到 Firestore Console 找到 `settings/app` 這份文件，新增一個欄位 `scanPassword`（字串），填入你要給讀卡機用的密碼。如果沒有設定這個欄位，「點名讀卡」頁面的解鎖畫面會顯示提示，告訴你要先去設定。
 
 ## Firebase 設定步驟
 
 1. 到 [Firebase Console](https://console.firebase.google.com/) 建立新專案，啟用 **Firestore Database**（正式環境模式即可，稍後會套用 `firestore.rules`）。
 2. 專案設定 → 一般 → 新增網頁應用程式，取得設定物件，貼到 `js/services/firebase-config.js` 的 `firebaseConfig`。
 3. 部署 `firestore.rules`（可用 Firebase CLI：`firebase deploy --only firestore:rules`，或直接貼到 Console 的規則編輯器）。
-4. 到 Firestore Console 手動建立一份文件：collection `settings`、文件 ID `app`，欄位 `readPassword`（字串），填入你要用的共用密碼。這一步刻意不開放從網頁寫入，避免密碼被任何前端程式改掉。
+4. 到 Firestore Console 手動建立一份文件：collection `settings`、文件 ID `app`，填入兩個欄位（都是字串）：`readPassword`（一般管理頁面用）與 `scanPassword`（點名讀卡機專用，可以跟 `readPassword` 設不同的密碼）。這一步刻意不開放從網頁寫入，避免密碼被任何前端程式改掉。
 5. 建議直接用 **Firebase Hosting** 部署整個 `project/` 資料夾：Hosting 預設就是 HTTPS，同時滿足 Web NFC 的安全環境要求，也方便手機直接開網址使用。
 
    ```bash
@@ -125,26 +133,27 @@ npx serve project        # 或 python3 -m http.server 5173 -d project
 
 | Collection | 欄位 | 說明 |
 |---|---|---|
-| `settings/app` | `readPassword` | 共用密碼，僅可讀取，需由後台維護 |
+| `settings/app` | `readPassword`, `scanPassword` | 兩組獨立密碼：`readPassword` 給一般管理頁面，`scanPassword` 給點名讀卡頁面／讀卡機專用，僅可讀取，需由後台維護 |
 | `members/{id}` | `name`, `cardUID`, `note`, `createdAt` | 成員與其學生證 UID 對應 |
 | `sessions/{id}` | `name`, `date`, `note`, `createdAt` | 點名場次（活動） |
 | `attendance/{id}` | `sessionId`, `memberId`, `memberName`, `cardUID`, `checkedInAt` | 每筆簽到紀錄；同一場次同一成員只會建立一筆 |
-| `logs/{id}` | `type`, `message`, `meta`, `createdAt` | 操作紀錄（新增／刪除成員、場次、簽到等），只能新增、無法修改或刪除 |
+| `logs/{id}` | `type`, `message`, `meta`, `createdAt` | 操作紀錄（新增／刪除成員、場次、簽到、好寶寶標記等），只能新增、無法修改或刪除 |
+| `goodkidMarks/{memberId}` | `counts`（emoji → 次數的對照表）, `updatedAt` | 好寶寶系統的手動標記次數，doc id 就是成員 id |
 
 ## 頁面與密碼保護
 
-| 路由 | 頁面 | 需要密碼 |
-|---|---|---|
-| `#/summary` | 資料匯總（三欄：場次列表／出席名單／統計卡片） | 否 |
-| `#/scan` | 點名讀卡（NFC 感應，手機優化） | 是 |
-| `#/sessions` | 場次管理 | 是 |
-| `#/members` | 成員管理（含 UID 登記） | 是 |
-| `#/goodkid` | 好寶寶紀錄（emoji 出席狀態） | 否 |
-| `#/log` | 活動紀錄 | 是 |
-| `#/export` | 匯出系統（CSV） | 是 |
+| 路由 | 頁面 | 需要密碼 | 使用哪組密碼 |
+|---|---|---|---|
+| `#/summary` | 資料匯總（三欄：場次列表／出席名單／統計卡片） | 否 | — |
+| `#/scan` | 點名讀卡（NFC 感應，手機優化） | 是 | `scanPassword`（獨立、存 localStorage） |
+| `#/sessions` | 場次管理 | 是 | `readPassword`（存 sessionStorage） |
+| `#/members` | 成員管理（含 UID 登記） | 是 | `readPassword` |
+| `#/goodkid` | 好寶寶系統（手動 emoji 標記） | 是 | `readPassword` |
+| `#/log` | 活動紀錄 | 是 | `readPassword` |
+| `#/export` | 匯出系統（CSV） | 否 | — |
 
-解鎖狀態存在 `sessionStorage`，關閉分頁或重新整理瀏覽器分頁群組後會需要重新輸入；側欄底部也提供「重新鎖定」按鈕可手動鎖回。
+一般管理頁面（場次／成員／好寶寶系統／活動紀錄）的解鎖狀態存在 `sessionStorage`，關閉分頁就需要重新輸入；側欄底部會分別顯示「一般管理」與「讀卡機」目前是否解鎖，也各自提供獨立的「鎖定管理」／「鎖定讀卡機」按鈕可手動鎖回。點名讀卡的解鎖狀態存在 `localStorage`，適合固定架設的讀卡機長期保持解鎖（詳見上方「點名讀卡的獨立密碼」章節）。
 
 ## 調整文案與選單
 
-`config/app-config.json` 集中管理側欄選單文字、圖示與資料匯總頁的統計卡片標籤，不需要改 JavaScript 就能調整顯示內容，符合設計規範第 12 節「JSON 驅動設定」的原則。
+`config/app-config.json` 集中管理側欄選單文字、圖示、每個路由是否需要密碼，以及資料匯總頁的統計卡片標籤，不需要改 JavaScript 就能調整顯示內容，符合設計規範第 12 節「JSON 驅動設定」的原則。

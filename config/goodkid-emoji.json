@@ -1,13 +1,9 @@
 {
-  "streakRules": [
-    { "minStreak": 5, "emoji": "🏆", "label": "連續出席 5 場以上" },
-    { "minStreak": 3, "emoji": "🌟", "label": "連續出席 3 場以上" },
-    { "minStreak": 1, "emoji": "✅", "label": "最新場次有出席" }
-  ],
-  "absenceRules": [
-    { "minAbsentStreak": 3, "emoji": "🚨", "label": "連續缺席 3 場以上" },
-    { "minAbsentStreak": 1, "emoji": "💤", "label": "最新場次缺席" }
-  ],
-  "noRecordEmoji": "🆕",
-  "noRecordLabel": "尚無出席紀錄"
+  "emojiOptions": [
+    { "emoji": "🌟", "label": "表現優異" },
+    { "emoji": "👍", "label": "積極參與" },
+    { "emoji": "🎯", "label": "準時到場" },
+    { "emoji": "🙌", "label": "樂於協助" },
+    { "emoji": "⚠️", "label": "需要提醒" }
+  ]
 }

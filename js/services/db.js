@@ -11,17 +11,19 @@ import {
   where,
   orderBy,
   limit,
+  increment,
   serverTimestamp,
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 import { getDb } from './firebase-config.js';
 
 // ---------------------------------------------------------------
 // Firestore 結構
-//   settings/app        { readPassword }
+//   settings/app        { readPassword, scanPassword }
 //   members/{id}         { name, cardUID, note, createdAt }
 //   sessions/{id}         { name, date, note, createdAt }
 //   attendance/{id}       { sessionId, memberId, memberName, cardUID, checkedInAt }
 //   logs/{id}             { type, message, meta, createdAt }
+//   goodkidMarks/{memberId}  { counts: { "🌟": 2, "👍": 1, ... }, updatedAt }
 // ---------------------------------------------------------------
 
 /* ===================== settings ===================== */
@@ -36,6 +38,18 @@ export async function getReadPassword() {
 export async function setReadPassword(password) {
   const ref = doc(getDb(), 'settings', 'app');
   await setDoc(ref, { readPassword: password }, { merge: true });
+}
+
+export async function getScanPassword() {
+  const ref = doc(getDb(), 'settings', 'app');
+  const snap = await getDoc(ref);
+  if (!snap.exists()) return null;
+  return snap.data().scanPassword ?? null;
+}
+
+export async function setScanPassword(password) {
+  const ref = doc(getDb(), 'settings', 'app');
+  await setDoc(ref, { scanPassword: password }, { merge: true });
 }
 
 /* ===================== activity log ===================== */
@@ -192,4 +206,43 @@ function toMillis(timestamp) {
 
 function sortByCheckedInDesc(records) {
   return [...records].sort((a, b) => toMillis(b.checkedInAt) - toMillis(a.checkedInAt));
+}
+
+/* ===================== good-kid manual marks ===================== */
+// 每個成員一份文件（doc id = memberId），counts 是 emoji -> 次數 的對照表。
+// 管理者點擊卡片上的 emoji 按鈕時累加次數；此功能設計為可重複點擊、可同時累積多種 emoji。
+
+export async function listGoodkidCounts() {
+  const snap = await getDocs(collection(getDb(), 'goodkidMarks'));
+  const result = {};
+  snap.docs.forEach((d) => {
+    result[d.id] = d.data().counts || {};
+  });
+  return result;
+}
+
+export async function incrementGoodkidMark(memberId, memberName, emoji) {
+  const ref = doc(getDb(), 'goodkidMarks', memberId);
+  await setDoc(
+    ref,
+    {
+      counts: { [emoji]: increment(1) },
+      updatedAt: serverTimestamp(),
+    },
+    { merge: true }
+  );
+  await addLog('goodkid_mark', `好寶寶標記：${memberName} 獲得 ${emoji}`, { memberId, emoji });
+}
+
+export async function decrementGoodkidMark(memberId, memberName, emoji) {
+  const ref = doc(getDb(), 'goodkidMarks', memberId);
+  await setDoc(
+    ref,
+    {
+      counts: { [emoji]: increment(-1) },
+      updatedAt: serverTimestamp(),
+    },
+    { merge: true }
+  );
+  await addLog('goodkid_unmark', `取消好寶寶標記：${memberName} 的 ${emoji}`, { memberId, emoji });
 }
