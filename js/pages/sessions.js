@@ -88,7 +88,7 @@ export async function mountPage() {
         });
         if (!ok) return;
         try {
-          await deleteSession(id);
+          await deleteSession(id, session.name);
           showToast('已刪除場次', 'success');
           refresh();
         } catch (err) {
@@ -159,7 +159,8 @@ export async function mountPage() {
         });
         if (!ok) return;
         try {
-          await deleteAttendance(attendanceId);
+          const session = sessions.find((s) => s.id === selectedSessionId);
+          await deleteAttendance(attendanceId, name, session?.name);
           showToast('已刪除簽到紀錄', 'success');
           refreshAttendees();
         } catch (err) {

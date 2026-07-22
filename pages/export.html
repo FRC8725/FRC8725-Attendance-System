@@ -1,0 +1,25 @@
+<div class="page-header">
+  <div>
+    <h1 class="page-title">匯出系統</h1>
+    <p class="page-subtitle">選擇時間範圍，一鍵將簽到資料匯出為 CSV</p>
+  </div>
+</div>
+
+<div class="card" style="max-width:480px;">
+  <h2 class="card-section-title">匯出範圍</h2>
+  <div class="form-row">
+    <div class="field">
+      <label class="field-label" for="export-start-date">開始日期</label>
+      <input class="input" id="export-start-date" type="date" />
+    </div>
+    <div class="field">
+      <label class="field-label" for="export-end-date">結束日期</label>
+      <input class="input" id="export-end-date" type="date" />
+    </div>
+  </div>
+  <div id="export-preview-text" class="text-muted" style="font-size:12.5px; margin-bottom:16px;"></div>
+  <button type="button" class="btn btn-primary" id="export-csv-btn" style="width:100%;">
+    <span class="ico-svg" style="--icon-url:url('images/icons/download.svg'); mask-image: var(--icon-url); -webkit-mask-image: var(--icon-url);"></span>
+    <span>匯出 CSV</span>
+  </button>
+</div>

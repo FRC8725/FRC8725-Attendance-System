@@ -24,27 +24,35 @@ function renderAccountHost() {
   const host = document.getElementById('account-host');
   if (!host) return;
 
-  const unlocked = isUnlocked();
+  const generalUnlocked = isUnlocked('general');
+  const scanUnlocked = isUnlocked('scan');
+
   host.innerHTML = `
     <div class="account-box">
-      <div class="account-title">讀取介面狀態</div>
-      <div class="account-sub">${unlocked ? '已解鎖・可進行點名操作' : '未解鎖・僅能檢視資料匯總'}</div>
-      ${
-        unlocked
-          ? `<button type="button" class="btn btn-ghost" id="lock-again-btn" style="margin-top:10px;">
-              ${iconSpan('lock')}<span>重新鎖定</span>
-            </button>`
-          : ''
-      }
+      <div class="account-title">鎖定狀態</div>
+      <div class="account-sub">一般管理：${generalUnlocked ? '已解鎖' : '未解鎖'}</div>
+      <div class="account-sub">讀卡機：${scanUnlocked ? '已解鎖' : '未解鎖'}</div>
+      <div style="display:flex; gap:6px; margin-top:10px; flex-wrap:wrap;">
+        ${
+          generalUnlocked
+            ? `<button type="button" class="btn btn-ghost" id="lock-general-btn" style="flex:1; min-width:0;">
+                ${iconSpan('lock')}<span>鎖定管理</span>
+              </button>`
+            : ''
+        }
+        ${
+          scanUnlocked
+            ? `<button type="button" class="btn btn-ghost" id="lock-scan-btn" style="flex:1; min-width:0;">
+                ${iconSpan('lock')}<span>鎖定讀卡機</span>
+              </button>`
+            : ''
+        }
+      </div>
     </div>
   `;
 
-  const btn = document.getElementById('lock-again-btn');
-  if (btn) {
-    btn.addEventListener('click', () => {
-      lock();
-    });
-  }
+  document.getElementById('lock-general-btn')?.addEventListener('click', () => lock('general'));
+  document.getElementById('lock-scan-btn')?.addEventListener('click', () => lock('scan'));
 }
 
 export function initShell(config) {

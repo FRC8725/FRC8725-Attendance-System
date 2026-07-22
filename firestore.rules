@@ -1,9 +1,10 @@
 rules_version = '2';
 
 // ---------------------------------------------------------------------
-// 這組規則搭配「單一共用密碼」的介面鎖定使用。
+// 這組規則搭配「共用密碼」的介面鎖定使用（一般管理用 readPassword，
+// 點名讀卡機專用 scanPassword，兩組密碼互相獨立）。
 // 重要觀念：密碼鎖只是網頁介面上的一道門，不是 Firebase 層級的身分驗證。
-// 因為網頁必須能讀到 settings/app.readPassword 才能在瀏覽器裡跟使用者
+// 因為網頁必須能讀到 settings/app 裡的密碼欄位才能在瀏覽器裡跟使用者
 // 輸入的密碼比對，所以這份文件必須允許「讀取」。這代表：只要有人知道
 // 你的 Firebase 專案設定值，理論上還是可以直接呼叫 Firestore API 讀到
 // 密碼本身，繞過網頁的門。這是「純前端共用密碼」方案本質上的限制，
@@ -17,8 +18,8 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // 密碼設定：允許讀取供前端比對，但禁止任何用戶端寫入，
-    // 只能由你在 Firebase Console 或 Admin SDK 手動設定/更新密碼。
+    // 密碼設定（readPassword、scanPassword）：允許讀取供前端比對，
+    // 但禁止任何用戶端寫入，只能由你在 Firebase Console 或 Admin SDK 手動設定/更新。
     match /settings/{docId} {
       allow read: if true;
       allow write: if false;
@@ -43,6 +44,21 @@ service cloud.firestore {
       allow create: if request.resource.data.sessionId is string
                     && request.resource.data.memberId is string;
       allow update, delete: if true;
+    }
+
+    // 活動紀錄（log）：只能新增，禁止修改或刪除，維持稽核紀錄的完整性。
+    match /logs/{logId} {
+      allow read: if true;
+      allow create: if request.resource.data.type is string
+                    && request.resource.data.message is string;
+      allow update, delete: if false;
+    }
+
+    // 好寶寶系統：每位成員一份文件（doc id = memberId），
+    // counts 欄位是 emoji -> 次數的累加對照表，透過 increment() 更新。
+    match /goodkidMarks/{memberId} {
+      allow read: if true;
+      allow write: if true;
     }
   }
 }

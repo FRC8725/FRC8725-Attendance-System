@@ -1,0 +1,26 @@
+<div class="page-header">
+  <div>
+    <h1 class="page-title">活動紀錄</h1>
+    <p class="page-subtitle">名單新增／刪除、場次新增／刪除、簽到等操作的歷史紀錄</p>
+  </div>
+  <div class="page-actions">
+    <button type="button" class="btn btn-ghost btn-icon" id="log-refresh-btn" title="重新整理">
+      <span class="ico-svg" style="--icon-url:url('images/icons/refresh.svg'); mask-image: var(--icon-url); -webkit-mask-image: var(--icon-url);"></span>
+    </button>
+  </div>
+</div>
+
+<div style="display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap;" id="log-filter-chips">
+  <button type="button" class="chip is-clickable is-active" data-filter="all">全部</button>
+  <button type="button" class="chip is-clickable" data-filter="attendance">簽到</button>
+  <button type="button" class="chip is-clickable" data-filter="member">成員</button>
+  <button type="button" class="chip is-clickable" data-filter="session">場次</button>
+  <button type="button" class="chip is-clickable" data-filter="goodkid">好寶寶</button>
+  <button type="button" class="chip is-clickable" data-filter="delete">刪除</button>
+</div>
+
+<div class="card">
+  <div class="list" id="log-list">
+    <div class="state-block"><div class="spinner"></div>載入中…</div>
+  </div>
+</div>
