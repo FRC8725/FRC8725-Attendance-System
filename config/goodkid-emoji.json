@@ -1,9 +1,9 @@
 {
   "emojiOptions": [
-    { "emoji": "🌟", "label": "表現優異" },
-    { "emoji": "👍", "label": "積極參與" },
-    { "emoji": "🎯", "label": "準時到場" },
-    { "emoji": "🙌", "label": "樂於協助" },
-    { "emoji": "⚠️", "label": "需要提醒" }
+    { "emoji": "🤩", "label": "夯" },
+    { "emoji": "😎", "label": "頂級" },
+    { "emoji": "🫥", "label": "啥事不幹?" },
+    { "emoji": "🤬", "label": "操" },
+    { "emoji": "💩", "label": "拉玩了" }
   ]
 }
